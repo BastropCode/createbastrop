@@ -1,0 +1,67 @@
+[
+  {
+    "id": "sunset-over-the-colorado",
+    "title": "Sunset Over the Colorado",
+    "artistId": "maria-gonzalez",
+    "artistName": "Maria Gonzalez",
+    "image": "",
+    "thumb": "",
+    "discipline": "painting",
+    "medium": "Oil on canvas",
+    "year": 2025,
+    "description": "A vibrant capture of the Colorado River at golden hour, painted en plein air from the banks near Fisherman's Park.",
+    "featured": true
+  },
+  {
+    "id": "lost-pines-morning",
+    "title": "Lost Pines Morning",
+    "artistId": "james-walker",
+    "artistName": "James Walker",
+    "image": "",
+    "thumb": "",
+    "discipline": "photography",
+    "medium": "Digital photography",
+    "year": 2025,
+    "description": "Early morning fog weaving through the recovering Lost Pines forest, a testament to nature's resilience after the 2011 wildfire.",
+    "featured": true
+  },
+  {
+    "id": "river-vessel",
+    "title": "River Vessel",
+    "artistId": "sophia-chen",
+    "artistName": "Sophia Chen",
+    "image": "",
+    "thumb": "",
+    "discipline": "ceramics",
+    "medium": "Stoneware with natural ash glaze",
+    "year": 2025,
+    "description": "A large thrown vessel with textures inspired by the Colorado River bed. The ash glaze was created using wood from fallen Bastrop pines.",
+    "featured": false
+  },
+  {
+    "id": "main-street-mural",
+    "title": "Main Street Mural",
+    "artistId": "maria-gonzalez",
+    "artistName": "Maria Gonzalez",
+    "image": "",
+    "thumb": "",
+    "discipline": "murals",
+    "medium": "Acrylic on brick",
+    "year": 2024,
+    "description": "A 30-foot mural on Main Street celebrating Bastrop's creative community, featuring local landmarks and diverse faces of the town.",
+    "featured": true
+  },
+  {
+    "id": "woven-roots",
+    "title": "Woven Roots",
+    "artistId": "nina-ramirez",
+    "artistName": "Nina Ramirez",
+    "image": "",
+    "thumb": "",
+    "discipline": "textile",
+    "medium": "Hand-woven cotton and wool",
+    "year": 2025,
+    "description": "A large-scale tapestry exploring themes of heritage and belonging, incorporating natural dyes sourced from plants native to Bastrop County.",
+    "featured": false
+  }
+]

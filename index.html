@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Bastrop — Community Arts Initiative</title>
+  <meta name="description" content="Helping Bastrop's creatives be seen digitally. Discover local artists, explore community art, and find creative events in Bastrop, TX.">
+  <meta property="og:title" content="Create Bastrop — Community Arts Initiative">
+  <meta property="og:description" content="Discover local artists, explore community art, and find creative events in Bastrop, TX.">
+  <meta property="og:type" content="website">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+  <script src="js/app.js"></script>
+</head>
+<body x-data="community">
+
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay"
+       :class="{ open: mobileMenuOpen }"
+       aria-hidden="true"
+       @click="closeMobileMenu()"></div>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="container">
+      <a href="#"><img src="logo.png" alt="Create Bastrop" class="nav-logo"></a>
+
+      <ul class="nav-links" id="primary-navigation" :class="{ open: mobileMenuOpen }">
+        <li><a href="#artists" :class="{ active: activeSection === 'artists' }" @click="closeMobileMenu()">Artists</a></li>
+        <li><a href="#gallery" :class="{ active: activeSection === 'gallery' }" @click="closeMobileMenu()">Gallery</a></li>
+        <li><a href="#events" :class="{ active: activeSection === 'events' }" @click="closeMobileMenu()">Events</a></li>
+        <li><a href="#about" :class="{ active: activeSection === 'about' }" @click="closeMobileMenu()">About</a></li>
+        <li>
+          <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-cta" @click="closeMobileMenu()">
+            Submit Your Art
+          </a>
+        </li>
+      </ul>
+
+      <button class="hamburger"
+              :class="{ open: mobileMenuOpen }"
+              @click="toggleMobileMenu()"
+              :aria-expanded="mobileMenuOpen.toString()"
+              aria-controls="primary-navigation"
+              aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <img src="logo.png" alt="Create Bastrop" class="hero-logo">
+    <h1>Helping Bastrop's Creatives Be Seen</h1>
+    <p>A community arts initiative connecting artists, showcasing creativity, and celebrating culture in Bastrop, TX.</p>
+    <div class="hero-buttons">
+      <a href="#artists" class="btn-cta">Meet Our Artists</a>
+      <a href="#gallery" class="btn-secondary">Explore the Gallery</a>
+    </div>
+  </section>
+
+  <!-- Artists Section -->
+  <section id="artists" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Meet Our Artists</h2>
+        <p>Talented creatives from across Bastrop County and beyond</p>
+      </div>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <label for="artist-search" class="sr-only">Search artists</label>
+        <span class="search-icon" aria-hidden="true">&#128269;</span>
+        <input id="artist-search"
+               type="text"
+               class="search-input"
+               placeholder="Search artists by name, discipline, or keyword..."
+               x-model.debounce.300ms="searchQuery">
+      </div>
+
+      <div class="loading-state" x-show="!loaded && !loadError">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <p>Loading artist profiles...</p>
+      </div>
+
+      <div class="empty-state error-state" x-show="loadError">
+        <div class="icon">&#9888;&#65039;</div>
+        <p x-text="loadError"></p>
+      </div>
+
+      <!-- Filter Pills -->
+      <div class="filter-bar" x-show="loaded && !loadError">
+        <button class="filter-pill" :class="{ active: artistFilter === 'all' }" @click="setArtistFilter('all')">All</button>
+        <template x-for="d in activeDisciplinesArtists" :key="d.id">
+          <button class="filter-pill"
+                  :data-color="d.color"
+                  :class="{ active: artistFilter === d.id }"
+                  @click="setArtistFilter(d.id)"
+                  x-text="d.label"></button>
+        </template>
+      </div>
+
+      <!-- Artist Grid -->
+      <div class="artist-grid" x-show="loaded && !loadError">
+        <template x-for="artist in filteredArtists" :key="artist.id">
+          <article class="artist-card card-animate"
+                   :class="{ featured: artist.featured }"
+                   role="button"
+                   tabindex="0"
+                   :aria-label="`Open details for ${artist.name}`"
+                   @click="openArtist(artist)"
+                   @keydown.enter.prevent="openArtist(artist)"
+                   @keydown.space.prevent="openArtist(artist)">
+            <!-- Photo or Placeholder -->
+            <template x-if="artist.photo">
+              <img :src="artist.photo" :alt="artist.name" class="artist-photo" loading="lazy">
+            </template>
+            <template x-if="!artist.photo">
+              <div class="artist-photo-placeholder"
+                   :style="`background: ${getPlaceholderColor(artist.id)}`"
+                   x-text="getInitials(artist.name)"></div>
+            </template>
+
+            <h3 x-text="artist.name"></h3>
+            <div class="location" x-text="artist.location"></div>
+
+            <div class="discipline-badges">
+              <template x-for="disc in artist.disciplines" :key="disc">
+                <span class="badge" :class="`badge-${disc}`" x-text="disc"></span>
+              </template>
+            </div>
+
+            <p class="artist-bio" x-text="artist.bio"></p>
+
+            <div class="artist-links" @click.stop>
+              <template x-if="artist.website">
+                <a :href="artist.website" target="_blank" rel="noopener" title="Website" :aria-label="`${artist.name} website`">&#127760;</a>
+              </template>
+              <template x-if="artist.instagram">
+                <a :href="'https://instagram.com/' + artist.instagram" target="_blank" rel="noopener" title="Instagram" :aria-label="`${artist.name} Instagram`">&#128247;</a>
+              </template>
+            </div>
+          </article>
+        </template>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" x-show="loaded && !loadError && filteredArtists.length === 0">
+        <div class="icon">&#127912;</div>
+        <p>No artists found matching your search. Try a different keyword or filter.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section id="gallery" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <h2>Community Gallery</h2>
+        <p>Artwork from our vibrant creative community</p>
+      </div>
+
+      <div class="loading-state" x-show="!loaded && !loadError">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <p>Loading gallery pieces...</p>
+      </div>
+
+      <div class="empty-state error-state" x-show="loadError">
+        <div class="icon">&#9888;&#65039;</div>
+        <p x-text="loadError"></p>
+      </div>
+
+      <!-- Filter Pills -->
+      <div class="filter-bar" x-show="loaded && !loadError">
+        <button class="filter-pill" :class="{ active: galleryFilter === 'all' }" @click="setGalleryFilter('all')">All</button>
+        <template x-for="d in activeDisciplinesGallery" :key="d.id">
+          <button class="filter-pill"
+                  :data-color="d.color"
+                  :class="{ active: galleryFilter === d.id }"
+                  @click="setGalleryFilter(d.id)"
+                  x-text="d.label"></button>
+        </template>
+      </div>
+
+      <!-- Gallery Grid -->
+      <div class="gallery-grid" x-show="loaded && !loadError">
+        <template x-for="(piece, index) in filteredGallery" :key="piece.id">
+          <article class="gallery-item card-animate"
+                   role="button"
+                   tabindex="0"
+                   :aria-label="`Open artwork ${piece.title} by ${piece.artistName}`"
+                   @click="openLightbox(index)"
+                   @keydown.enter.prevent="openLightbox(index)"
+                   @keydown.space.prevent="openLightbox(index)">
+            <template x-if="piece.image || piece.thumb">
+              <img :src="piece.thumb || piece.image" :alt="piece.title" loading="lazy">
+            </template>
+            <template x-if="!piece.image && !piece.thumb">
+              <div class="gallery-placeholder"
+                   :class="getPlaceholderAspect(piece.id)"
+                   :style="`background: linear-gradient(135deg, ${getPlaceholderColor(piece.id)}22, ${getPlaceholderColor(piece.id)}44)`"
+                   x-text="getDisciplineEmoji(piece.discipline)">
+              </div>
+            </template>
+            <div class="gallery-overlay">
+              <h4 x-text="piece.title"></h4>
+              <p x-text="piece.artistName"></p>
+            </div>
+          </article>
+        </template>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" x-show="loaded && !loadError && filteredGallery.length === 0">
+        <div class="icon">&#128444;&#65039;</div>
+        <p>No artwork found for this discipline. Check back soon!</p>
+      </div>
+
+      <!-- CTA Banner -->
+      <div class="cta-banner">
+        <h3>Share Your Creativity with Bastrop</h3>
+        <p>We'd love to feature your work. Submit your art and join the community.</p>
+        <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-cta-light">Submit Your Art</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Events Section -->
+  <section id="events" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Events & Meetups</h2>
+        <p>Connect, create, and celebrate together</p>
+      </div>
+
+      <div class="loading-state" x-show="!loaded && !loadError">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <p>Loading events...</p>
+      </div>
+
+      <div class="empty-state error-state" x-show="loadError">
+        <div class="icon">&#9888;&#65039;</div>
+        <p x-text="loadError"></p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="event-tabs" x-show="loaded && !loadError">
+        <button class="event-tab" :class="{ active: eventTab === 'upcoming' }" @click="eventTab = 'upcoming'">
+          Upcoming <span x-show="upcomingEvents.length" x-text="'(' + upcomingEvents.length + ')'"></span>
+        </button>
+        <button class="event-tab" :class="{ active: eventTab === 'past' }" @click="eventTab = 'past'">
+          Past <span x-show="pastEvents.length" x-text="'(' + pastEvents.length + ')'"></span>
+        </button>
+      </div>
+
+      <!-- Event List -->
+      <div class="event-list" x-show="loaded && !loadError">
+        <template x-for="event in currentEvents" :key="event.id">
+          <div class="event-card card-animate">
+            <div class="event-date-chip">
+              <span class="month" x-text="formatEventDate(event.date).month"></span>
+              <span class="day" x-text="formatEventDate(event.date).day"></span>
+            </div>
+            <div class="event-details">
+              <span class="event-category" :class="`event-category-${event.category}`" x-text="event.category"></span>
+              <h3 x-text="event.title"></h3>
+              <div class="event-meta">
+                <span x-text="event.time"></span>
+                <span x-text="event.location"></span>
+              </div>
+              <p x-text="event.description"></p>
+              <template x-if="event.link">
+                <a :href="event.link" target="_blank" rel="noopener" class="event-link">Learn more &rarr;</a>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" x-show="loaded && !loadError && currentEvents.length === 0">
+        <div class="icon" x-html="eventTab === 'upcoming' ? '&#128197;' : '&#128218;'"></div>
+        <p x-text="eventTab === 'upcoming'
+          ? 'No upcoming events right now. Check back soon or suggest one!'
+          : 'No past events to show yet.'"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="section section-alt">
+    <div class="container">
+      <div class="section-header">
+        <h2>About Create Bastrop</h2>
+      </div>
+
+      <div class="mission-text">
+        <p>Create Bastrop is a community arts initiative dedicated to helping local creatives be seen, connected, and celebrated. We believe every artist deserves a digital stage — whether you paint murals, write poetry, throw pottery, or strum a guitar on your front porch.</p>
+        <p>Our mission is simple: <strong>make Bastrop's creative spirit visible to the world.</strong></p>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-card">
+          <div class="icon">&#127912;</div>
+          <h3>Share Your Art</h3>
+          <p>Submit your work to be featured in our community gallery. All creative disciplines welcome — visual art, music, poetry, dance, and more.</p>
+          <div class="about-card-actions">
+            <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-cta">Submit Your Art</a>
+          </div>
+        </div>
+        <div class="about-card">
+          <div class="icon">&#127911;</div>
+          <h3>Attend Events</h3>
+          <p>Join art walks, open mics, workshops, and showcases. Meet fellow creatives and be part of Bastrop's thriving arts scene.</p>
+          <div class="about-card-actions">
+            <a href="#events" class="btn-secondary">See Events</a>
+          </div>
+        </div>
+        <div class="about-card">
+          <div class="icon">&#128483;&#65039;</div>
+          <h3>Spread the Word</h3>
+          <p>Know a local artist who should be featured? Share Create Bastrop with them. The more voices, the richer our community.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <img src="logo.png" alt="Create Bastrop" class="footer-logo">
+      <div class="footer-links">
+        <a href="#artists">Artists</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#events">Events</a>
+        <a href="#about">About</a>
+        <a href="https://forms.google.com" target="_blank" rel="noopener">Submit Art</a>
+      </div>
+      <p class="footer-copy">&copy; 2026 Create Bastrop &bull; by <a href="https://bastropcode.com" target="_blank" rel="noopener">Bastrop Code Studio</a></p>
+      <button class="back-to-top" @click="scrollToTop()">&uarr; Back to top</button>
+    </div>
+  </footer>
+
+  <!-- Artist Detail Modal -->
+  <template x-if="selectedArtist">
+    <div class="artist-modal-overlay"
+         x-show="selectedArtist"
+         x-transition.opacity
+         role="dialog"
+         aria-modal="true"
+         :aria-labelledby="selectedArtist ? `artist-modal-title-${selectedArtist.id}` : null"
+         @click.self="closeArtist()"
+         @keydown.escape.window="closeArtist()">
+      <div class="artist-modal" @click.stop>
+        <button class="modal-close" @click="closeArtist()" aria-label="Close artist details">&times;</button>
+
+        <template x-if="selectedArtist.photo">
+          <img :src="selectedArtist.photo" :alt="selectedArtist.name" class="artist-photo artist-modal-photo">
+        </template>
+        <template x-if="!selectedArtist.photo">
+          <div class="artist-photo-placeholder artist-modal-photo artist-modal-placeholder"
+               :style="`background: ${getPlaceholderColor(selectedArtist.id)}`"
+               x-text="getInitials(selectedArtist.name)"></div>
+        </template>
+
+        <h3 class="artist-modal-title" :id="`artist-modal-title-${selectedArtist.id}`" x-text="selectedArtist.name"></h3>
+        <div class="location" x-text="selectedArtist.location"></div>
+
+        <div class="discipline-badges artist-modal-badges">
+          <template x-for="disc in selectedArtist.disciplines" :key="disc">
+            <span class="badge" :class="`badge-${disc}`" x-text="disc"></span>
+          </template>
+        </div>
+
+        <p class="artist-modal-bio" x-text="selectedArtist.bio"></p>
+
+        <div class="artist-links artist-modal-links">
+          <template x-if="selectedArtist.website">
+            <a :href="selectedArtist.website" target="_blank" rel="noopener" title="Website">&#127760; Website</a>
+          </template>
+          <template x-if="selectedArtist.instagram">
+            <a :href="'https://instagram.com/' + selectedArtist.instagram" target="_blank" rel="noopener" title="Instagram">&#128247; Instagram</a>
+          </template>
+        </div>
+
+        <!-- Show this artist's gallery pieces -->
+        <template x-if="gallery.filter(g => g.artistId === selectedArtist.id).length > 0">
+          <div class="artist-modal-work">
+            <h4>Work in the Gallery</h4>
+            <template x-for="piece in gallery.filter(g => g.artistId === selectedArtist.id)" :key="piece.id">
+              <div class="artist-modal-work-item">
+                <strong x-text="piece.title"></strong>
+                <span class="artist-modal-work-meta" x-text="' — ' + piece.medium + ', ' + piece.year"></span>
+              </div>
+            </template>
+          </div>
+        </template>
+      </div>
+    </div>
+  </template>
+
+  <!-- Lightbox -->
+  <template x-if="lightboxOpen && lightboxItem">
+    <div class="lightbox"
+         x-show="lightboxOpen"
+         x-transition.opacity
+         role="dialog"
+         aria-modal="true"
+         :aria-labelledby="lightboxItem ? `lightbox-title-${lightboxItem.id}` : null"
+         @click.self="closeLightbox()">
+      <button class="lightbox-close" @click="closeLightbox()" aria-label="Close gallery view">&times;</button>
+      <button class="lightbox-nav lightbox-prev" @click="prevLightbox()" aria-label="Previous artwork">&#8249;</button>
+      <button class="lightbox-nav lightbox-next" @click="nextLightbox()" aria-label="Next artwork">&#8250;</button>
+
+      <div class="lightbox-content">
+        <template x-if="lightboxItem.image">
+          <img :src="lightboxItem.image" :alt="lightboxItem.title">
+        </template>
+        <template x-if="!lightboxItem.image">
+          <div class="gallery-placeholder lightbox-placeholder"
+               :style="`background: linear-gradient(135deg, ${getPlaceholderColor(lightboxItem.id)}33, ${getPlaceholderColor(lightboxItem.id)}66)`"
+               x-text="getDisciplineEmoji(lightboxItem.discipline)">
+          </div>
+        </template>
+
+        <div class="lightbox-info">
+          <h3 :id="`lightbox-title-${lightboxItem.id}`" x-text="lightboxItem.title"></h3>
+          <p>
+            <span class="artist-link" x-text="lightboxItem.artistName"></span>
+            <span x-text="' &bull; ' + lightboxItem.medium + ', ' + lightboxItem.year"></span>
+          </p>
+          <p class="lightbox-description" x-text="lightboxItem.description"></p>
+        </div>
+      </div>
+    </div>
+  </template>
+
+</body>
+</html>

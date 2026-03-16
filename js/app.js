@@ -1,0 +1,300 @@
+/* ============================================
+   Create Bastrop — Alpine.js Application
+   ============================================ */
+
+// Discipline taxonomy with assigned colors
+const DISCIPLINES = [
+  { id: 'painting', label: 'Painting', color: 'red' },
+  { id: 'sculpture', label: 'Sculpture', color: 'orange' },
+  { id: 'photography', label: 'Photography', color: 'cyan' },
+  { id: 'music', label: 'Music', color: 'blue' },
+  { id: 'poetry', label: 'Poetry', color: 'pink' },
+  { id: 'dance', label: 'Dance', color: 'pink' },
+  { id: 'theater', label: 'Theater', color: 'red' },
+  { id: 'crafts', label: 'Crafts', color: 'orange' },
+  { id: 'murals', label: 'Murals', color: 'green' },
+  { id: 'digital', label: 'Digital', color: 'cyan' },
+  { id: 'mixed-media', label: 'Mixed Media', color: 'orange' },
+  { id: 'film', label: 'Film', color: 'blue' },
+  { id: 'ceramics', label: 'Ceramics', color: 'orange' },
+  { id: 'textile', label: 'Textile', color: 'pink' },
+];
+
+// Color palette for generating placeholder backgrounds
+const PLACEHOLDER_COLORS = [
+  '#E63228', '#F28A1F', '#5BBD2B', '#29ABE2', '#D94F8A', '#2D3A8C',
+];
+
+function getDisciplineColor(id) {
+  const d = DISCIPLINES.find(d => d.id === id);
+  return d ? d.color : 'orange';
+}
+
+function getInitials(name) {
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+}
+
+function getPlaceholderColor(id) {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = id.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return PLACEHOLDER_COLORS[Math.abs(hash) % PLACEHOLDER_COLORS.length];
+}
+
+// Gallery placeholder aspects
+const GALLERY_ASPECTS = ['', 'landscape', 'square'];
+function getPlaceholderAspect(id) {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = id.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return GALLERY_ASPECTS[Math.abs(hash) % GALLERY_ASPECTS.length];
+}
+
+// Emoji per discipline for placeholders
+const DISCIPLINE_EMOJI = {
+  painting: '\uD83C\uDFA8',
+  sculpture: '\uD83E\uDDF1',
+  photography: '\uD83D\uDCF7',
+  music: '\uD83C\uDFB5',
+  poetry: '\u270D\uFE0F',
+  dance: '\uD83D\uDC83',
+  theater: '\uD83C\uDFAD',
+  crafts: '\u2702\uFE0F',
+  murals: '\uD83D\uDD8C\uFE0F',
+  digital: '\uD83D\uDCBB',
+  'mixed-media': '\uD83C\uDFAD',
+  film: '\uD83C\uDFAC',
+  ceramics: '\uD83C\uDFFA',
+  textile: '\uD83E\uDDF5',
+};
+
+// Format date for event cards
+function formatEventDate(dateStr) {
+  const date = new Date(dateStr + 'T00:00:00');
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return {
+    month: months[date.getMonth()],
+    day: date.getDate(),
+  };
+}
+
+async function fetchJson(path) {
+  const response = await fetch(path);
+  if (!response.ok) {
+    throw new Error(`Failed to load ${path}`);
+  }
+  return response.json();
+}
+
+// Main Alpine component
+document.addEventListener('alpine:init', () => {
+  Alpine.data('community', () => ({
+    // Data
+    artists: [],
+    gallery: [],
+    events: [],
+    disciplines: DISCIPLINES,
+
+    // Filters
+    artistFilter: 'all',
+    galleryFilter: 'all',
+    searchQuery: '',
+    eventTab: 'upcoming',
+
+    // Lightbox state
+    lightboxOpen: false,
+    lightboxIndex: 0,
+
+    // Artist modal
+    selectedArtist: null,
+
+    // Mobile menu
+    mobileMenuOpen: false,
+
+    // Active nav section
+    activeSection: '',
+
+    // Loading
+    loaded: false,
+    loadError: '',
+
+    // Initialize
+    async init() {
+      try {
+        const [artists, gallery, events] = await Promise.all([
+          fetchJson('data/artists.json'),
+          fetchJson('data/gallery.json'),
+          fetchJson('data/events.json'),
+        ]);
+        this.artists = artists;
+        this.gallery = gallery;
+        this.events = events;
+        this.loaded = true;
+      } catch (e) {
+        console.error('Failed to load data:', e);
+        this.loadError = 'We could not load the community data right now. Please try again shortly.';
+        this.loaded = true;
+      }
+
+      // Set up Intersection Observer for active nav
+      this.$nextTick(() => this.setupNavObserver());
+
+      // Keyboard listeners for lightbox
+      document.addEventListener('keydown', (e) => {
+        if (!this.lightboxOpen) return;
+        if (e.key === 'Escape') this.closeLightbox();
+        if (e.key === 'ArrowLeft') this.prevLightbox();
+        if (e.key === 'ArrowRight') this.nextLightbox();
+      });
+    },
+
+    // --- Computed / Getters ---
+
+    get filteredArtists() {
+      let result = this.artists;
+      if (this.artistFilter !== 'all') {
+        result = result.filter(a => a.disciplines.includes(this.artistFilter));
+      }
+      if (this.searchQuery.trim()) {
+        const q = this.searchQuery.toLowerCase().trim();
+        result = result.filter(a =>
+          a.name.toLowerCase().includes(q) ||
+          a.bio.toLowerCase().includes(q) ||
+          a.disciplines.some(d => d.toLowerCase().includes(q))
+        );
+      }
+      return result;
+    },
+
+    get filteredGallery() {
+      if (this.galleryFilter === 'all') return this.gallery;
+      return this.gallery.filter(g => g.discipline === this.galleryFilter);
+    },
+
+    get upcomingEvents() {
+      const today = new Date().toISOString().split('T')[0];
+      return this.events
+        .filter(e => e.date >= today)
+        .sort((a, b) => a.date.localeCompare(b.date));
+    },
+
+    get pastEvents() {
+      const today = new Date().toISOString().split('T')[0];
+      return this.events
+        .filter(e => e.date < today)
+        .sort((a, b) => b.date.localeCompare(a.date));
+    },
+
+    get currentEvents() {
+      return this.eventTab === 'upcoming' ? this.upcomingEvents : this.pastEvents;
+    },
+
+    get activeDisciplinesArtists() {
+      const used = new Set();
+      this.artists.forEach(a => a.disciplines.forEach(d => used.add(d)));
+      return DISCIPLINES.filter(d => used.has(d.id));
+    },
+
+    get activeDisciplinesGallery() {
+      const used = new Set(this.gallery.map(g => g.discipline));
+      return DISCIPLINES.filter(d => used.has(d.id));
+    },
+
+    // --- Actions ---
+
+    setArtistFilter(filter) {
+      this.artistFilter = filter;
+    },
+
+    setGalleryFilter(filter) {
+      this.galleryFilter = filter;
+    },
+
+    openArtist(artist) {
+      this.selectedArtist = artist;
+      document.body.classList.add('modal-open');
+    },
+
+    closeArtist() {
+      this.selectedArtist = null;
+      if (!this.lightboxOpen && !this.mobileMenuOpen) {
+        document.body.classList.remove('modal-open');
+      }
+    },
+
+    openLightbox(index) {
+      this.lightboxIndex = index;
+      this.lightboxOpen = true;
+      document.body.classList.add('modal-open');
+    },
+
+    closeLightbox() {
+      this.lightboxOpen = false;
+      if (!this.selectedArtist && !this.mobileMenuOpen) {
+        document.body.classList.remove('modal-open');
+      }
+    },
+
+    prevLightbox() {
+      const items = this.filteredGallery;
+      this.lightboxIndex = (this.lightboxIndex - 1 + items.length) % items.length;
+    },
+
+    nextLightbox() {
+      const items = this.filteredGallery;
+      this.lightboxIndex = (this.lightboxIndex + 1) % items.length;
+    },
+
+    get lightboxItem() {
+      return this.filteredGallery[this.lightboxIndex] || null;
+    },
+
+    toggleMobileMenu() {
+      this.mobileMenuOpen = !this.mobileMenuOpen;
+      document.body.classList.toggle('modal-open', this.mobileMenuOpen || this.lightboxOpen || !!this.selectedArtist);
+    },
+
+    closeMobileMenu() {
+      this.mobileMenuOpen = false;
+      if (!this.lightboxOpen && !this.selectedArtist) {
+        document.body.classList.remove('modal-open');
+      }
+    },
+
+    // Intersection Observer for active nav highlighting
+    setupNavObserver() {
+      const sections = document.querySelectorAll('.section[id]');
+      if (!sections.length) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            this.activeSection = entry.target.id;
+          }
+        });
+      }, {
+        rootMargin: '-20% 0px -60% 0px',
+        threshold: 0,
+      });
+
+      sections.forEach(s => observer.observe(s));
+    },
+
+    // Helper methods exposed to template
+    getDisciplineColor,
+    getInitials,
+    getPlaceholderColor,
+    getPlaceholderAspect,
+    formatEventDate,
+    getDisciplineEmoji(discipline) {
+      return DISCIPLINE_EMOJI[discipline] || '\uD83C\uDFA8';
+    },
+
+    scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+  }));
+});

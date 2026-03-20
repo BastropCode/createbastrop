@@ -236,6 +236,57 @@
     </div>
   </section>
 
+  <!-- Local Studios Section -->
+  <section id="studios" class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Local Studios</h2>
+        <p>Creative spaces and businesses from our community</p>
+      </div>
+
+      <div class="studios-grid" x-show="loaded && !loadError && partners.length > 0">
+        <template x-for="partner in partners" :key="partner.id">
+          <article class="studio-card card-animate">
+            <div class="studio-carousel" x-data="{ current: 0 }" x-init="setInterval(() => { current = (current + 1) % partner.images.length }, 4000)">
+              <template x-for="(img, i) in partner.images" :key="img">
+                <img :src="img"
+                     :alt="partner.name"
+                     class="studio-carousel-img"
+                     :class="{ active: current === i }"
+                     loading="lazy">
+              </template>
+              <div class="studio-carousel-dots">
+                <template x-for="(img, i) in partner.images" :key="'dot-' + i">
+                  <button class="studio-dot"
+                          :class="{ active: current === i }"
+                          @click="current = i"
+                          :aria-label="`Show image ${i + 1}`"></button>
+                </template>
+              </div>
+            </div>
+
+            <div class="studio-info">
+              <h3 x-text="partner.name"></h3>
+              <p class="studio-description" x-text="partner.description"></p>
+
+              <div class="studio-links">
+                <template x-if="partner.website">
+                  <a :href="partner.website" target="_blank" rel="noopener" class="btn-cta">Visit Website</a>
+                </template>
+                <template x-if="partner.instagram">
+                  <a :href="'https://instagram.com/' + partner.instagram" target="_blank" rel="noopener" class="studio-social" title="Instagram">&#128247; <span x-text="'@' + partner.instagram"></span></a>
+                </template>
+                <template x-if="partner.phone">
+                  <a :href="'tel:' + partner.phone.replace(/[^+\\d]/g, '')" class="studio-social" title="Phone">&#128222; <span x-text="partner.phone"></span></a>
+                </template>
+              </div>
+            </div>
+          </article>
+        </template>
+      </div>
+    </div>
+  </section>
+
   <!-- Events Section -->
   <section id="events" class="section">
     <div class="container">

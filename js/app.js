@@ -96,6 +96,7 @@ document.addEventListener('alpine:init', () => {
     artists: [],
     gallery: [],
     events: [],
+    partners: [],
     disciplines: DISCIPLINES,
 
     // Filters
@@ -124,14 +125,16 @@ document.addEventListener('alpine:init', () => {
     // Initialize
     async init() {
       try {
-        const [artists, gallery, events] = await Promise.all([
+        const [artists, gallery, events, partners] = await Promise.all([
           fetchJson('data/artists.json'),
           fetchJson('data/gallery.json'),
           fetchJson('data/events.json'),
+          fetchJson('data/partners.json'),
         ]);
         this.artists = artists;
         this.gallery = gallery;
         this.events = events;
+        this.partners = partners;
         this.loaded = true;
       } catch (e) {
         console.error('Failed to load data:', e);

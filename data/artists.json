@@ -1,7 +1,7 @@
 [
   {
-    "id": "djully-marquez",
-    "name": "Djully Marquez",
+    "id": "djully-marques",
+    "name": "Djully Marques",
     "photo": "artists/djully/djully.webp",
     "disciplines": ["painting"],
     "bio": "Artist, educator, and co-founder of COR. Djully combines artistic foundations, color theory, and structured learning with a calm, encouraging environment — helping people build skill, confidence, and creative independence that lasts.",
@@ -12,63 +12,15 @@
     "joinedYear": 2026
   },
   {
-    "id": "maria-gonzalez",
-    "name": "Maria Gonzalez",
+    "id": "dan-gonzo",
+    "name": "Dan Gonzo",
     "photo": "",
-    "disciplines": ["painting", "murals"],
-    "bio": "Bastrop-based muralist exploring the intersection of nature and community. Maria's vibrant large-scale works can be found throughout downtown Bastrop, celebrating the town's rich history and natural beauty.",
-    "location": "Downtown Bastrop",
-    "website": "",
-    "instagram": "",
-    "featured": true,
-    "joinedYear": 2024
-  },
-  {
-    "id": "james-walker",
-    "name": "James Walker",
-    "photo": "",
-    "disciplines": ["photography", "film"],
-    "bio": "Documentary photographer capturing the stories of small-town Texas. James focuses on candid moments that reveal the soul of Bastrop's people and landscapes.",
-    "location": "Bastrop, TX",
-    "website": "",
-    "instagram": "",
-    "featured": false,
-    "joinedYear": 2024
-  },
-  {
-    "id": "sophia-chen",
-    "name": "Sophia Chen",
-    "photo": "",
-    "disciplines": ["ceramics", "sculpture"],
-    "bio": "Ceramic artist creating functional and sculptural pieces inspired by the Colorado River and Bastrop's lost pines. Each piece tells a story of resilience and renewal.",
+    "disciplines": ["design"],
+    "bio": "",
     "location": "Bastrop, TX",
     "website": "",
     "instagram": "",
     "featured": true,
-    "joinedYear": 2025
-  },
-  {
-    "id": "derek-brooks",
-    "name": "Derek Brooks",
-    "photo": "",
-    "disciplines": ["music", "poetry"],
-    "bio": "Singer-songwriter and spoken word artist whose work draws from Bastrop's history and the rhythms of rural Texas life. Regular performer at local open mic nights.",
-    "location": "Bastrop, TX",
-    "website": "",
-    "instagram": "",
-    "featured": false,
-    "joinedYear": 2025
-  },
-  {
-    "id": "nina-ramirez",
-    "name": "Nina Ramirez",
-    "photo": "",
-    "disciplines": ["textile", "crafts"],
-    "bio": "Fiber artist and weaver blending traditional Mexican textile techniques with contemporary design. Nina leads workshops teaching heritage crafts to the next generation.",
-    "location": "Bastrop, TX",
-    "website": "",
-    "instagram": "",
-    "featured": true,
-    "joinedYear": 2025
+    "joinedYear": 2026
   }
 ]

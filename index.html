@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create Bastrop — Community Arts Initiative</title>
-  <meta name="description" content="Helping Bastrop's creatives be seen digitally. Discover local artists, explore community art, and find creative events in Bastrop, TX.">
-  <meta property="og:title" content="Create Bastrop — Community Arts Initiative">
-  <meta property="og:description" content="Discover local artists, explore community art, and find creative events in Bastrop, TX.">
+  <meta name="description" content="Where Bastrop's artists showcase and collectors discover original work. Browse the collection, meet the artists, and inquire about pieces.">
+  <meta property="og:title" content="Create Bastrop — Showcase. Discover. Collect.">
+  <meta property="og:description" content="Where Bastrop's artists showcase and collectors discover original work. Browse the collection and inquire about pieces.">
   <meta property="og:type" content="website">
 
   <!-- Fonts -->
@@ -36,7 +36,7 @@
 
       <ul class="nav-links" id="primary-navigation" :class="{ open: mobileMenuOpen }">
         <li><a href="#artists" :class="{ active: activeSection === 'artists' }" @click="closeMobileMenu()">Artists</a></li>
-        <li><a href="#gallery" :class="{ active: activeSection === 'gallery' }" @click="closeMobileMenu()">Gallery</a></li>
+        <li><a href="#gallery" :class="{ active: activeSection === 'gallery' }" @click="closeMobileMenu()">Collection</a></li>
         <li><a href="#events" :class="{ active: activeSection === 'events' }" @click="closeMobileMenu()">Events</a></li>
         <li><a href="#about" :class="{ active: activeSection === 'about' }" @click="closeMobileMenu()">About</a></li>
         <li>
@@ -62,11 +62,29 @@
   <!-- Hero -->
   <section class="hero">
     <img src="logo.png" alt="Create Bastrop" class="hero-logo">
-    <h1>Helping Bastrop's Creatives Be Seen</h1>
-    <p>A community arts initiative connecting artists, showcasing creativity, and celebrating culture in Bastrop, TX.</p>
+    <h1>Showcase. Discover. Collect.</h1>
+    <p>A community arts platform where Bastrop's artists showcase their work and collectors discover original pieces worth living with.</p>
     <div class="hero-buttons">
-      <a href="#artists" class="btn-cta">Meet Our Artists</a>
-      <a href="#gallery" class="btn-secondary">Explore the Gallery</a>
+      <a href="#artists" class="btn-cta">Meet the Artists</a>
+      <a href="#gallery" class="btn-secondary">Browse the Collection</a>
+    </div>
+  </section>
+
+  <!-- Spray Paint Banner -->
+  <section class="spray-banner" aria-label="Partnership banner">
+    <div class="spray-banner-inner">
+      <div class="spray-text">
+        <span class="spray-word"><span class="spray-by">by </span>Cor Art Studio</span>
+        <span class="spray-x">X</span>
+        <span class="spray-word">Bastrop Code Studio</span>
+      </div>
+      <div class="spray-drips" aria-hidden="true">
+        <span class="drip drip-1"></span>
+        <span class="drip drip-2"></span>
+        <span class="drip drip-3"></span>
+        <span class="drip drip-4"></span>
+        <span class="drip drip-5"></span>
+      </div>
     </div>
   </section>
 
@@ -167,8 +185,8 @@
   <section id="gallery" class="section section-alt">
     <div class="container">
       <div class="section-header">
-        <h2>Community Gallery</h2>
-        <p>Artwork from our vibrant creative community</p>
+        <h2>The Collection</h2>
+        <p>Original work from Bastrop's artists — available for inquiry</p>
       </div>
 
       <div class="loading-state" x-show="!loaded && !loadError">
@@ -216,6 +234,7 @@
             <div class="gallery-overlay">
               <h4 x-text="piece.title"></h4>
               <p x-text="piece.artistName"></p>
+              <span class="gallery-inquire-tag">Available — Inquire</span>
             </div>
           </article>
         </template>
@@ -229,9 +248,9 @@
 
       <!-- CTA Banner -->
       <div class="cta-banner">
-        <h3>Share Your Creativity with Bastrop</h3>
-        <p>We'd love to feature your work. Submit your art and join the community.</p>
-        <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-cta-light">Submit Your Art</a>
+        <h3>Interested in a Piece?</h3>
+        <p>Every work in the collection is available for inquiry. Reach out and we'll connect you with the artist.</p>
+        <a href="mailto:hello@createbastrop.com?subject=Collection%20Inquiry" class="btn-cta-light">Inquire by Email</a>
       </div>
     </div>
   </section>
@@ -357,31 +376,34 @@
       </div>
 
       <div class="mission-text">
-        <p>Create Bastrop is a community arts initiative dedicated to helping local creatives be seen, connected, and celebrated. We believe every artist deserves a digital stage — whether you paint murals, write poetry, throw pottery, or strum a guitar on your front porch.</p>
-        <p>Our mission is simple: <strong>make Bastrop's creative spirit visible to the world.</strong></p>
+        <p>Create Bastrop is a community arts platform where artists showcase their work and collectors discover original pieces. We believe every artist deserves a digital stage — and every collector deserves direct access to the people behind the work.</p>
+        <p>Our mission is simple: <strong>connect Bastrop's artists with the people who want to live with their art.</strong></p>
       </div>
 
       <div class="about-grid">
         <div class="about-card">
           <div class="icon">&#127912;</div>
-          <h3>Share Your Art</h3>
-          <p>Submit your work to be featured in our community gallery. All creative disciplines welcome — visual art, music, poetry, dance, and more.</p>
+          <h3>For Artists</h3>
+          <p>Showcase your work to collectors and art lovers. All creative disciplines welcome — painting, sculpture, photography, textiles, and more.</p>
           <div class="about-card-actions">
             <a href="https://forms.google.com" target="_blank" rel="noopener" class="btn-cta">Submit Your Art</a>
           </div>
         </div>
         <div class="about-card">
-          <div class="icon">&#127911;</div>
-          <h3>Attend Events</h3>
-          <p>Join art walks, open mics, workshops, and showcases. Meet fellow creatives and be part of Bastrop's thriving arts scene.</p>
+          <div class="icon">&#128444;&#65039;</div>
+          <h3>For Collectors</h3>
+          <p>Browse the collection, discover new artists, and inquire about pieces that speak to you. Every work is available — just reach out.</p>
           <div class="about-card-actions">
-            <a href="#events" class="btn-secondary">See Events</a>
+            <a href="mailto:hello@createbastrop.com?subject=Collection%20Inquiry" class="btn-secondary">Inquire by Email</a>
           </div>
         </div>
         <div class="about-card">
-          <div class="icon">&#128483;&#65039;</div>
-          <h3>Spread the Word</h3>
-          <p>Know a local artist who should be featured? Share Create Bastrop with them. The more voices, the richer our community.</p>
+          <div class="icon">&#127911;</div>
+          <h3>Come Out</h3>
+          <p>Art walks, open mics, workshops, and showcases. Meet the artists in person and be part of Bastrop's creative scene.</p>
+          <div class="about-card-actions">
+            <a href="#events" class="btn-secondary">See Events</a>
+          </div>
         </div>
       </div>
     </div>
@@ -393,10 +415,10 @@
       <img src="logo.png" alt="Create Bastrop" class="footer-logo">
       <div class="footer-links">
         <a href="#artists">Artists</a>
-        <a href="#gallery">Gallery</a>
+        <a href="#gallery">Collection</a>
         <a href="#events">Events</a>
         <a href="#about">About</a>
-        <a href="https://forms.google.com" target="_blank" rel="noopener">Submit Art</a>
+        <a href="mailto:hello@createbastrop.com?subject=Collection%20Inquiry">Inquire</a>
       </div>
       <p class="footer-copy">&copy; 2026 Create Bastrop &bull; by <a href="https://bastropcode.com" target="_blank" rel="noopener">Bastrop Code Studio</a></p>
       <button class="back-to-top" @click="scrollToTop()">&uarr; Back to top</button>
@@ -492,6 +514,11 @@
             <span x-text="' &bull; ' + lightboxItem.medium + ', ' + lightboxItem.year"></span>
           </p>
           <p class="lightbox-description" x-text="lightboxItem.description"></p>
+          <a class="btn-inquire"
+             :href="'mailto:hello@createbastrop.com?subject=Inquiry: ' + encodeURIComponent(lightboxItem.title) + ' by ' + encodeURIComponent(lightboxItem.artistName)"
+             @click.stop>
+            Inquire About This Piece
+          </a>
         </div>
       </div>
     </div>

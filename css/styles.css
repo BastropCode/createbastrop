@@ -367,6 +367,164 @@ h1, h2, h3, h4 {
   border-color: var(--brown-dark);
 }
 
+/* --- Spray Paint Banner --- */
+.spray-banner {
+  background: #1a1a1a;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.spray-banner-inner {
+  position: relative;
+  padding: clamp(1rem, 2.5vw, 1.5rem) 1.5rem;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.spray-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(230, 50, 40, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 30%, rgba(41, 171, 226, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(242, 138, 31, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Speckle noise overlay */
+.spray-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+  background-size: 150px 150px;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+.spray-by {
+  font-family: var(--font-body);
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  font-weight: 600;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.05em;
+}
+
+.spray-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.5rem, 2vw, 1.5rem);
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.spray-word {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(1.1rem, 3vw, 2rem);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-shadow:
+    0 0 20px rgba(255, 255, 255, 0.3),
+    0 0 40px rgba(255, 255, 255, 0.1),
+    2px 2px 0px rgba(0, 0, 0, 0.8),
+    -1px -1px 0px rgba(0, 0, 0, 0.5),
+    0 0 60px rgba(242, 138, 31, 0.2);
+  filter: url('#spray-filter');
+  position: relative;
+}
+
+.spray-word::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 5%;
+  right: 5%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
+  filter: blur(1px);
+}
+
+.spray-x {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(0.85rem, 2vw, 1.4rem);
+  color: var(--orange);
+  text-shadow:
+    0 0 30px rgba(242, 138, 31, 0.6),
+    0 0 60px rgba(242, 138, 31, 0.3),
+    2px 2px 0px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.1em;
+  transform: rotate(-5deg);
+  display: inline-block;
+}
+
+/* Paint drips */
+.spray-drips {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.drip {
+  position: absolute;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.05));
+  border-radius: 0 0 2px 2px;
+}
+
+.drip-1 { left: 15%; height: 18px; }
+.drip-2 { left: 35%; height: 12px; opacity: 0.7; }
+.drip-3 { left: 52%; height: 22px; background: linear-gradient(to bottom, rgba(242, 138, 31, 0.4), rgba(242, 138, 31, 0.05)); }
+.drip-4 { left: 70%; height: 14px; }
+.drip-5 { left: 88%; height: 10px; opacity: 0.5; }
+
+@media (max-width: 640px) {
+  .spray-text {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .spray-x {
+    transform: rotate(0deg);
+  }
+}
+
+/* --- Inquiry Button --- */
+.btn-inquire {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.6rem 1.5rem;
+  border-radius: 50px;
+  background: var(--orange);
+  color: var(--white) !important;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all var(--transition);
+}
+
+.btn-inquire:hover {
+  background: var(--red);
+  color: var(--white) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(242, 138, 31, 0.4);
+}
+
 /* --- Section Common --- */
 .section {
   padding: var(--section-pad) 0;
@@ -612,6 +770,7 @@ h1, h2, h3, h4 {
 .badge-film { background: var(--blue); }
 .badge-ceramics { background: var(--orange); }
 .badge-textile { background: var(--pink); }
+.badge-design { background: var(--cyan); }
 
 .artist-bio {
   font-size: 0.9rem;
@@ -789,6 +948,17 @@ h1, h2, h3, h4 {
 .gallery-overlay p {
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.8rem;
+}
+
+.gallery-inquire-tag {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--orange);
+  opacity: 0.9;
 }
 
 /* Gallery placeholder (when no images) */
@@ -1346,7 +1516,7 @@ h1, h2, h3, h4 {
 /* --- Responsive --- */
 @media (max-width: 640px) {
   .hero {
-    min-height: 100vh;
+    min-height: 80vh;
   }
 
   .hero-logo {
@@ -1390,6 +1560,39 @@ h1, h2, h3, h4 {
   .lightbox {
     padding: 1rem;
   }
+
+  .lightbox-content {
+    width: 100%;
+  }
+
+  .btn-inquire {
+    font-size: 0.8rem;
+    padding: 0.5rem 1.2rem;
+  }
+
+  .artist-modal {
+    padding: 1.5rem;
+    border-radius: 16px;
+    max-height: 90vh;
+  }
+
+  .artist-modal-photo {
+    width: 90px;
+    height: 90px;
+  }
+
+  .cta-banner {
+    padding: 2rem 1rem;
+    border-radius: 14px;
+  }
+
+  .cta-banner h3 {
+    font-size: 1.2rem;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1413,5 +1616,29 @@ h1, h2, h3, h4 {
 
   .artist-grid {
     grid-template-columns: 1fr;
+  }
+
+  .hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  .hero-buttons .btn-cta,
+  .hero-buttons .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .lightbox-info h3 {
+    font-size: 1.1rem;
+  }
+
+  .lightbox-info p {
+    font-size: 0.85rem;
   }
 }

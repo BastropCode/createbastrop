@@ -18,6 +18,7 @@ const DISCIPLINES = [
   { id: 'film', label: 'Film', color: 'blue' },
   { id: 'ceramics', label: 'Ceramics', color: 'orange' },
   { id: 'textile', label: 'Textile', color: 'pink' },
+  { id: 'design', label: 'Design', color: 'cyan' },
 ];
 
 // Color palette for generating placeholder backgrounds
